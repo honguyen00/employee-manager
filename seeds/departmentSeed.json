@@ -1,0 +1,20 @@
+[
+    {
+        "department_name": "Accounting"
+    },
+    {
+        "department_name": "Human Resources"
+    },
+    {
+        "department_name": "Finance"
+    },
+    {
+        "department_name": "IT"
+    },
+    {
+        "department_name": "Research and Development (R&D)"
+    },
+    {
+        "department_name": "Marketing"
+    }
+]
