@@ -13,7 +13,8 @@ Role.init(
         },
         title: {
             type: DataTypes.STRING(30),
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         salary: {
             type: DataTypes.DOUBLE,

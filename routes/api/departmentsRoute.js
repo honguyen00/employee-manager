@@ -1,34 +1,37 @@
 const router = require('express').Router();
-const { Driver, License, Car } = require('../../models');
+const { Department } = require('../../models');
 
-// GET all drivers
+// GET all departments
 router.get('/', async (req, res) => {
   try {
-    const driverData = await Driver.findAll({
-      include: [{ model: License }, { model: Car }],
+    const departmentData = await Department.findAll({
+        order: [["id"]]
     });
-    res.status(200).json(driverData);
+    if (departmentData) {
+        res.status(200).json(departmentData);
+    } else {
+        res.status(404).json({ message: "No department found in database" })
+    }   
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-// GET a single driver
-router.get('/:id', async (req, res) => {
-  try {
-    const driverData = await Driver.findByPk(req.params.id, {
-      include: [{ model: License }, { model: Car }],
-    });
-
-    if (!driverData) {
-      res.status(404).json({ message: 'No driver found with that id!' });
-      return;
+// POST a new department
+router.post('/', async (req, res) => {
+    try {
+      if (req.body) {
+        const departmentData = await Department.create({
+            department_name: req.body.department_name
+        });
+        res.status(200).json({ message: 'Create new department successfully', data: departmentData })
+      }
+      else {
+        res.status(404).json({ message: "Cannot create an empty department"})
     }
-
-    res.status(200).json(driverData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
 
 module.exports = router;

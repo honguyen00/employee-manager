@@ -12,8 +12,9 @@ Department.init(
             autoIncrement: true,
         },
         department_name: {
-            type: DataTypes.STRING(30),
-            allowNull: false
+            type: DataTypes.STRING(50),
+            allowNull: false,
+            unique: true
         }
     },
     {
