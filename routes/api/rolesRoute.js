@@ -1,13 +1,14 @@
 const router = require('express').Router();
-const { Role } = require('../../models');
+const db = require('../../config/mysql2');
 
 // GET all departments
 router.get('/', async (req, res) => {
   try {
-    const rolesData = await Role.findAll();
-    if (rolesData) {
-        res.status(200).json(rolesData);
-    } else {
+    const rolesData = await db.promise().query('SELECT * FROM role');
+    if(rolesData) {
+      res.status(200).json(rolesData[0]);
+    }
+    else {
         res.status(404).json({ message: "No roles found in database" })
     }   
   } catch (err) {
@@ -15,15 +16,12 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST a department
+// POST a new role
 router.post('/', async (req, res) => {
     try {
         if (req.body) {
-            const rolesData = await Role.create({
-                title: req.body.title,
-                salary: req.body.salary,
-                department_id: req.body.department_id
-            });
+          const roleDetails = [req.body.title, req.body.salary, req.body.department_id]
+            const rolesData = await db.promise().query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [...roleDetails])
             res.status(200).json({ message: "Create new role successfully!", data: rolesData})
         }
         else {

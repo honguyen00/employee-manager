@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const { Employee } = require('../../models');
+const db = require('../../config/mysql2');
 
 // GET all employees
 router.get('/', async (req, res) => {
   try {
-    const employeesData = await Employee.findAll();
+    const employeesData = await db.promise().query('SELECT * FROM employee ORDER BY id')
     if (employeesData) {
-        res.status(200).json(employeesData);
+        res.status(200).json(employeesData[0]);
     } else {
         res.status(404).json({ message: "No employees found in database" })
     }   
@@ -19,30 +19,22 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
       if (req.body) {
-        const employeeData = await Employee.create({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            role_id: req.body.role_id,
-            manager_id: req.body.manager_id || null
-        });
-        res.status(200).json({ message: 'Create new department successfully', data: employeeData })
+        const employeeDetails = [req.body.first_name, req.body.last_name, req.body.role_id, req.body.manager_id || null]
+        const employeeData = await db.promise().query(
+          'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [...employeeDetails]
+        )
+        res.status(200).json({ message: 'Create new employee successfully', data: employeeData })
       }
     } catch (err) {
       res.status(500).json(err);
     }
 });
 
-// POST a new employee
+// UPDATE employee role
 router.put('/:id', async (req, res) => {
     try {
-      if (req.body && req.params) {
-        const employeeData = await Employee.update({
-            role_id: req.body.role_id
-        }, {
-            where: {
-                id: req.params.id
-            }
-        });
+      if (req.body && req.params) {   
+        const employeeData = await db.promise().query('UPDATE employee SET role_id = ? WHERE id = ?', [req.body.role_id, req.params.id])
         res.status(200).json({ message: 'Update role successfully', data: employeeData })
       }
     } catch (err) {
