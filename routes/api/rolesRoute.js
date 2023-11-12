@@ -32,4 +32,20 @@ router.post('/', async (req, res) => {
     }
 });
 
+// find a role by id
+router.get('/:id', async (req, res) => {
+  try {
+    if (req.params.id) {
+      const roleData = await db.promise().query('SELECT * FROM role WHERE id=?', req.params.id)
+      res.status(200).json(roleData[0])
+    }
+    else {
+      res.status(404).json({ message: "Must include an id"})
+  }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+
 module.exports = router;

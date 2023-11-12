@@ -28,6 +28,21 @@ router.post('/', async (req, res) => {
     } catch (err) {
       res.status(500).json(err);
     }
-  });
+});
+
+// find a department by id
+router.get('/:id', async (req, res) => {
+  try {
+    if (req.params.id) {
+      const departmentData = await db.promise().query('SELECT id, department_name AS department FROM department WHERE id=?', req.params.id)
+      res.status(200).json(departmentData[0])
+    }
+    else {
+      res.status(404).json({ message: "Must include an id"})
+  }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;

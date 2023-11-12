@@ -30,6 +30,21 @@ router.post('/', async (req, res) => {
     }
 });
 
+// find an employee by id
+router.get('/:id', async (req, res) => {
+  try {
+    if (req.params.id) {
+      const employeeData = await db.promise().query('SELECT * FROM employee WHERE id=?', req.params.id)
+      res.status(200).json(employeeData[0])
+    }
+    else {
+      res.status(404).json({ message: "Must include an id"})
+  }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // UPDATE employee role
 router.put('/:id', async (req, res) => {
     try {
