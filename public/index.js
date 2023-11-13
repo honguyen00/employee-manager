@@ -8,7 +8,6 @@ function transformedToObject(arr) {
     return transformed;
 }
 
-
 console.log(boxen('EMPLOYEE MANAGER', {padding: 1, borderStyle: 'double', backgroundColor: 'gray'}))
 const menu = () => {
     let allRoles = [];
@@ -30,7 +29,8 @@ const menu = () => {
             name: 'intro',
             choices: [
                 'View all departments', 'View all roles', 'View all employees', 'Add a new department', 'Add a new role', 'Add a new employee', 'Change role of an employee',
-                'Change manager of an employee', 'View employees by manager', 'View employees by department', `Quit`
+                'Change manager of an employee', 'View employees by manager', 'View employees by department', 'Delete a department', 
+                'Delete a role', 'Delete an employee', 'View total budget by department', `Quit`
             ]
         }
     ])
@@ -184,6 +184,59 @@ const menu = () => {
                         console.table(transformedToObject(data));
                     })
                 })
+            case 'Delete a department':
+                return inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'department',
+                        message: 'Please select the department:',
+                        choices: departments   
+                    }
+                ]).then(({department}) => {
+                    query.deleteDeparment(department).then((data) => {
+                        console.log('\x1b[36m%s\x1b[0m', "Delete department successfully!");
+                    })
+                })
+            case 'Delete a role':
+                return inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'role',
+                        message: 'Please select the role:',
+                        choices: allRoles   
+                    }
+                ]).then(({role}) => {
+                    query.deleteRole(role).then(() => {
+                        console.log('\x1b[36m%s\x1b[0m', "Delete role successfully!");
+                    })
+                })
+            case 'Delete an employee':
+                allEmployees.shift();
+                return inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: 'Please select the employee:',
+                        choices: allEmployees   
+                    }
+                ]).then(({employee}) => {
+                    query.deleteEmployee(employee).then(() => {
+                        console.log('\x1b[36m%s\x1b[0m', "Delete employee successfully!");
+                    })
+                })
+            case 'View total budget by department':
+                return inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'department',
+                        message: 'Please select the department:',
+                        choices: departments   
+                    }
+                ]).then(({department}) => {
+                    query.viewBudgetByDepartment(department).then((data) => {
+                        console.table(transformedToObject(data));
+                    })
+                })
             default:
                 console.log("Quit program successfully!")
                 process.exit(0);
@@ -192,7 +245,7 @@ const menu = () => {
     .then(() => {
         setTimeout(() => {
             menu();
-        }, 200)
+        }, 500)
     })
 }
 

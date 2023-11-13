@@ -56,7 +56,35 @@ class Query {
         } catch (error) {
             return console.error(error);
         }
+    }
+
+    async deleteDeparment(id) {
+        try {
+            const data = await db.promise().query('DELETE FROM department WHERE id = ?', id);
+            return data;
+        } catch (error) {
+            return console.error(error);
+        }
+    }
+
+    async deleteRole(id) {
+        try {
+            const data = await db.promise().query('DELETE FROM role WHERE id = ?', id);
+            return data;
+        } catch (error) {
+            return console.error(error);
+        }
         
+    }
+
+    async deleteEmployee(id) {
+        try {
+            const data = await db.promise().query(
+            'DELETE FROM employee WHERE id = ?', id);
+            return data;
+        } catch (error) {
+            return console.error(error);
+        }
     }
 
     async updateEmployee(id, roleid) {
@@ -103,6 +131,20 @@ class Query {
             LEFT JOIN 
             (SELECT role.id as id, title, department.id AS department FROM role JOIN department ON role.department_id = department.id) t2
             ON (t1.role_id = t2.id) WHERE t2.department = ?`, department_id);
+            return data[0];
+        } catch (error) {
+            return console.error(error);
+        }
+    }
+
+    async viewBudgetByDepartment(department_id) {
+        try {
+            const data = await db.promise().query(`SELECT t2.department_id AS id, t2.department, SUM(t2.salary) AS total_budget FROM 
+            (SELECT employee.id as id, employee.role_id
+            FROM employee JOIN role ON role.id = employee.role_id) t1
+            LEFT JOIN 
+            (SELECT role.id as id, role.salary, department.id AS department_id, department.department_name AS department FROM role JOIN department ON role.department_id = department.id) t2
+            ON (t1.role_id = t2.id) WHERE t2.department_id = ?`, department_id);
             return data[0];
         } catch (error) {
             return console.error(error);

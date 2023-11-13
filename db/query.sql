@@ -18,12 +18,16 @@
 -- GROUP BY e.id;
 
 -- SELECT id, CONCAT(first_name, " " ,last_name) AS employees FROM employee WHERE manager_id = 9;
-SELECT * from employee;
-SELECT * from role;
+-- SELECT * from employee;
+-- SELECT * from role;
 
-SELECT t1.id, t1.employee FROM 
-(SELECT employee.id as id, CONCAT(employee.first_name, " ", employee.last_name) AS employee, employee.role_id
+SELECT t2.department_id, t2.department, SUM(t2.salary) AS total_budget FROM 
+(SELECT employee.id as id, employee.role_id
 FROM employee JOIN role ON role.id = employee.role_id) t1
 LEFT JOIN 
-(SELECT role.id as id, title, department.id AS department FROM role JOIN department ON role.department_id = department.id) t2
-ON (t1.role_id = t2.id) WHERE t2.department = 1
+(SELECT role.id as id, role.salary, department.id AS department_id, department.department_name AS department FROM role JOIN department ON role.department_id = department.id) t2
+ON (t1.role_id = t2.id) WHERE t2.department_id = 1;
+
+-- (SELECT role.id as id, role.salary, department.id AS department from role join department on role.department_id = department.id ORDER BY department) t1
+-- LEFT JOIN 
+-- (SELECT employee.id as id, employee.role_id)

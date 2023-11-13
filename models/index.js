@@ -4,7 +4,7 @@ const Employee = require('./Employee');
 
 Department.hasMany(Role, {
     foreignKey: 'department_id',
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
 });
 
 Role.belongsTo(Department, {
@@ -13,7 +13,7 @@ Role.belongsTo(Department, {
 
 Role.hasMany(Employee, {
     foreignKey: 'role_id',
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
 })
 
 Employee.belongsTo(Role, {
@@ -22,7 +22,7 @@ Employee.belongsTo(Role, {
 
 Employee.hasOne(Employee, {
     foreignKey: 'manager_id',
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
 })
 
 Employee.belongsTo(Employee, {
