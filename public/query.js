@@ -67,6 +67,47 @@ class Query {
             return console.error(error);
         }
     }
+
+    async updateManager(id, managerid) {
+        try {
+            const data = await db.promise().query('UPDATE employee SET manager_id = ? WHERE id = ?', [managerid, id]);
+            return data;
+        } catch (error) {
+            return console.error(error);
+        }
+    }
+
+    async viewAllManagers() {
+        try {
+            const data = await db.promise().query('SELECT e.id, CONCAT(e.first_name," ", e.last_name) AS managers FROM employee m LEFT JOIN employee e ON e.id = m.manager_id GROUP BY e.id;');
+            return data[0];
+        } catch (error) {
+            return console.error(error);
+        }
+    }
+
+    async viewEmployeesByManager(manager_id) {
+        try {
+            const data = await db.promise().query('SELECT id, CONCAT(first_name, " " ,last_name) AS employees FROM employee WHERE manager_id = ?', manager_id);
+            return data[0];
+        } catch (error) {
+            return console.error(error);
+        }
+    }
+
+    async viewEmployeesByDepartment(department_id) {
+        try {
+            const data = await db.promise().query(`SELECT t1.id, t1.employees, t2.title FROM 
+            (SELECT employee.id AS id, CONCAT(employee.first_name, " ", employee.last_name) AS employees, employee.role_id
+            FROM employee JOIN role ON role.id = employee.role_id) t1
+            LEFT JOIN 
+            (SELECT role.id as id, title, department.id AS department FROM role JOIN department ON role.department_id = department.id) t2
+            ON (t1.role_id = t2.id) WHERE t2.department = ?`, department_id);
+            return data[0];
+        } catch (error) {
+            return console.error(error);
+        }
+    }
 }
 
 module.exports = Query;
